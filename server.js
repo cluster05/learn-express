@@ -1,27 +1,38 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const User = require('./UserSchema');
 var jwt = require('jsonwebtoken');
-
 const bcrypt = require('bcrypt');
 
 const app = express();
-const PORT = 3000
 
+const PORT = 3000;
 const saltRounds = 10;
 const JWT_SECRET = "secret";
+const MONGODB_URL = 'mongodb://localhost:27017/mongodb';
 
+mongoose.connect(
+    MONGODB_URL,
+    { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(success => console.log('MONGODB CONNECTION ESTABLISHED'))
+    .catch(error => console.log('ERROR IN ESTABLISHING CONNECTION'))
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-const FAKE_DB = [];
 
 app.post('/auth/register', (req, res) => {
     const { username, email, password } = req.body;
     bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(password, salt, function (err, hash) {
-            FAKE_DB.push({ username, email, password: hash });
-            sendToken(username, email, res);
+            new User({ username, email, password: hash }).save()
+                .then(response => {
+                    sendToken(username, email, res);
+                })
+                .catch(error => {
+                    res.send({ message: 'Error in Server' })
+                });
         });
     });
 });
