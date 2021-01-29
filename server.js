@@ -75,16 +75,13 @@ const sendToken = (username, email, res) => {
 }
 
 const verifyToken = (req, res, next) => {
-
     const token = req.headers.authorization.split(' ')[1];
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        res.send({
-            token,
-            decoded
-        })
+        req.user = decoded;
+        next();
     } catch (err) {
-        res.send({ message: 'Invalid Request' })
+        res.send({ message: 'Unauthorised Request' })
     }
 }
 
@@ -92,7 +89,6 @@ const verifyToken = (req, res, next) => {
 app.get('/auth/users/count', verifyToken, (req, res) => {
     res.send({ count: FAKE_DB.length });
 });
-
 
 
 app.listen(PORT, () => {
