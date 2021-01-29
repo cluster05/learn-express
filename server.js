@@ -4,27 +4,21 @@ const app = express();
 const PORT = 3000
 
 
-// routing methods 
-app.get('/', (req, res) => {
-    res.send('METHOD : GET')
-})
-app.post('/', (req, res) => {
-    res.send('METHOD :POST ')
-})
-app.put('/', (req, res) => {
-    res.send('METHOD : PUT')
-})
-app.delete('/', (req, res) => {
-    res.send('METHOD : DELETE')
+app.get('/route/:routeParamerter', (req, res) => {
+    res.send({ params: req.params })
 })
 
-// special route
-app.all('/all', (req, res) => {
-    res.send('all route response')
+// localhost:3000/flight/IND-USA
+app.get('/flight/:from-:to', (req, res) => {
+    res.send({ params: req.params })
 })
 
-//The characters ?, +, *, and () are subsets of their regular expression counterparts.
-// The hyphen (-) and the dot (.) are interpreted literally by string-based paths.
+// localhost:3000/plant/genes.speces
+app.get('/plant/:genes.:species', (req, res) => {
+    res.send({ params: req.params })
+})
+
+
 app.listen(PORT, () => {
     console.log(`Example app listening at http://localhost:${PORT}`)
 })
