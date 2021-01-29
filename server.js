@@ -1,11 +1,23 @@
 const express = require('express');
 const app = express();
-const birdRouter = require('./bird');
 const PORT = 3000
 
-app.use('/public', express.static('/public'))
+// Middleware functions can perform the following tasks:
+// Execute any code.
+// Make changes to the request and the response objects.
+// End the request-response cycle.
+// Call the next middleware in the stack.
 
-app.use('/bird', birdRouter);
+var myLogger = function (req, res, next) {
+    console.log('LOGGED')
+    next()
+}
+
+app.use(myLogger)
+
+app.get('/', function (req, res) {
+    res.send('Hello World!')
+})
 
 
 app.listen(PORT, () => {
