@@ -8,15 +8,17 @@ const PORT = 3000
 // End the request-response cycle.
 // Call the next middleware in the stack.
 
-var myLogger = function (req, res, next) {
-    console.log('LOGGED')
+var requestTime = function (req, res, next) {
+    req.requestTime = Date.now()
     next()
 }
 
-app.use(myLogger)
+app.use(requestTime)
 
 app.get('/', function (req, res) {
-    res.send('Hello World!')
+    var responseText = 'Hello World!<br>'
+    responseText += '<small>Requested at: ' + req.requestTime + '</small>'
+    res.send(responseText)
 })
 
 
