@@ -2,33 +2,19 @@ const express = require('express');
 const app = express();
 const PORT = 3000
 
-//single middle were
-app.get('/user/:userID', (req, res, next) => {
+app.use('/public', express.static('/public'))
 
-    const userID = parseInt(req.params.userID);
-
-    userID === 10 ? next() : res.send('unAuthorised');
-
-}, (req, res) => {
-    res.send('Authorised');
+app.get('/download', (req, res) => {
+    res.download('public/static/hello.txt')
 })
 
-//multiple moddlewere
-var cb0 = function (req, res, next) {
-    console.log('CB0')
-    next()
-}
-
-var cb1 = function (req, res, next) {
-    console.log('CB1')
-    next()
-}
-
-var cb2 = function (req, res) {
-    res.send('Hello from C!')
-}
-
-app.get('/example/c', [cb0, cb1, cb2])
+app.get('/json/:id', (req, res) => {
+    res.json({ id: req.params.id });
+    res.redirect('/download')
+})
+app.get('/render', (req, res) => {
+    res.render('public/static/index.html')
+})
 
 
 app.listen(PORT, () => {
