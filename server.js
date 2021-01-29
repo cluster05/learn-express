@@ -33,6 +33,22 @@ app.post('/auth/login', (req, res) => {
     });
 });
 
+app.post('/auth/reset-password', (req, res) => {
+    const { email, password, newPassword } = req.body;
+    FAKE_DB.forEach(user => {
+        if (user.email === email) {
+            if (user.password === password) {
+                user.password = newPassword;
+                res.send(user);
+            } else {
+                res.send({ message: 'Invalid Password' })
+            }
+        } else {
+            res.send({ message: 'Invalid Credentails' })
+        }
+    });
+})
+
 
 app.listen(PORT, () => {
     console.log(`Example app listening at http://localhost:${PORT}`)
